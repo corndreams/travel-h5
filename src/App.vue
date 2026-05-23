@@ -1,5 +1,8 @@
 <script setup>
 import { ref } from 'vue'
+import { useRoute } from 'vue-router'
+
+const route = useRoute()
 
 const active = ref(0)
 
@@ -8,7 +11,7 @@ const active = ref(0)
 <template>
   <div class="container">
     <router-view />
-      <van-tabbar v-model="active" route>
+      <van-tabbar v-if="['/', '/chat', '/profile'].includes(route.path)" v-model="active" route>
         <van-tabbar-item icon="home-o" to="/" >首页</van-tabbar-item>
         <van-tabbar-item icon="chat-o" to="/chat">对话</van-tabbar-item>
         <van-tabbar-item icon="user-o" to="/profile">我的</van-tabbar-item>

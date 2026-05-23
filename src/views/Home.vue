@@ -1,6 +1,7 @@
 <script setup>
 import { ref, reactive } from 'vue'
 import { useRouter } from 'vue-router'
+import { showToast } from 'vant'
 
 const router = useRouter()
 
@@ -14,7 +15,7 @@ const showPopup = () => {
 
 const onConfirm = ({ selectedOptions }) => {
   show.value = false
-  searchForm.destination = selectedOptions[0].value
+  searchForm.city = selectedOptions[0].value
 }
 
 const onCancel = () => {
@@ -31,16 +32,37 @@ const columns = allCities.map((city) => {
 })
 
 const searchForm = reactive({
-  destination: '',
-  departureTime: '',
+  city: '',
+  days: '',
   budget: ''
 })
 
-const handleSearch = () => {
+const handleSubmit = () => {
   isLoading.value = true
-  setTimeout(() => {
+  if(!searchForm.city){
     isLoading.value = false
-  }, 1000)
+    showToast('请输入目的地')
+    return
+  }
+  if(!searchForm.days || searchForm.days <= 0 || searchForm.days > 30){
+    isLoading.value = false
+    showToast('请输入行程天数,1-30天')
+    return
+  }
+  if(!searchForm.budget || searchForm.budget <= 100){
+    isLoading.value = false
+    showToast('请输入预算(元),预算不能小于100元')
+       return
+  }
+
+  router.push({
+    path: '/detail',
+    query: {
+      city: searchForm.city,
+      days: searchForm.days,
+      budget: searchForm.budget
+    }
+  })
 }
 
 const toPage = (path) => {
@@ -48,26 +70,26 @@ const toPage = (path) => {
 }
 
 const changeCity = (city) => {
-  searchForm.destination = city
+  searchForm.city = city
 }
 </script>
 
 <template>
   <div class="page-container">
     <div class="page-header">
-      <van-nav-bar title="首页" />
+      <van-nav-bar fixed title="首页" />
     </div>
     <div class="page-content">
       <van-notice-bar left-icon="info-o" text="基于AI的智能景点介绍与行程规划助手" style="margin-bottom: 10px;" />
       <div class="card search-card">
         <div class="section-title">规划你的行程</div>
-        <van-field is-link readonly v-model="searchForm.destination" placeholder="请输入目的地" label="目的地" @click="showPopup"
+        <van-field is-link readonly v-model="searchForm.city" placeholder="请输入目的地" label="目的地" @click="showPopup"
           style="background-color: #f5f5f5;border-radius: 8px;margin-top: 12px;" />
-        <van-field v-model="searchForm.departureTime" placeholder="请输入行程天数" label="行程天数" type="number"
+        <van-field v-model="searchForm.days" placeholder="请输入行程天数" label="行程天数" type="number"
           style="background-color: #f5f5f5;border-radius: 8px;margin-top: 12px;" />
         <van-field v-model="searchForm.budget" placeholder="请输入预算(元)" label="预算(元)" type="number"
           style="background-color: #f5f5f5;border-radius: 8px;margin-top: 12px;" />
-        <van-button type="primary" block style="margin-top: 12px;" round @click="handleSearch"
+        <van-button type="primary" block style="margin-top: 12px;" round @click="handleSubmit"
           :loading="isLoading">查询</van-button>
       </div>
       <div class="card quick-actions">
@@ -81,7 +103,7 @@ const changeCity = (city) => {
         <div class="section-title">热门城市</div>
         <van-grid :column-num="4" :gutter="12" style="margin-top: 10px;">
           <van-grid-item v-for="city in hotCities" :key="city" :text="city" @click="changeCity(city)">
-            <div class="city-tag" :class="{ 'active': city === searchForm.destination }">{{ city }}</div>
+            <div class="city-tag" :class="{ 'active': city === searchForm.city }">{{ city }}</div>
           </van-grid-item>
         </van-grid>
       </div>
@@ -95,10 +117,6 @@ const changeCity = (city) => {
 <style scoped>
 .page-header {
   margin-bottom: 10px;
-}
-
-.page-content {
-  padding: 10px;
 }
 
 .card {

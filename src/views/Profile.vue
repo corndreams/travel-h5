@@ -1,7 +1,7 @@
 <template>
   <div class="page-container">
     <div class="page-header">
-      <van-nav-bar title="个人中心" />
+      <van-nav-bar fixed title="个人中心" />
     </div>
   </div>
 </template>
