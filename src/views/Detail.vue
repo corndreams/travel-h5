@@ -115,7 +115,7 @@ const gotoChat = () => {
       </template>
     </div>
     <div class="detail-footer" v-if="tripData && tripData.success !== false">
-      <van-button type="primary" size="large" round @click="gotoChat">咨询AI</van-button>
+      <van-button type="primary" size="large" round @click="gotoChat" class="chat-btn">咨询AI</van-button>
     </div>
   </div>
 </template>
@@ -221,7 +221,5 @@ const gotoChat = () => {
   max-height: 750px;
   margin: 0 auto;
 }
-
-
 
 </style>

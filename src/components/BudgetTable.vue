@@ -1,5 +1,5 @@
 <script setup>
-import { ref, computed } from 'vue'
+import { computed } from 'vue'
 
 const props = defineProps({
   data: {
@@ -60,7 +60,7 @@ const getLabel = (key) => {
 
 .total {
   display: flex;
-  justify-content: flex-end;
+  justify-content: space-between;
   align-items: center;
   padding: 8px;
   background-color: #f5f5f5;
